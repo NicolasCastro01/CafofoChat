@@ -21,14 +21,9 @@
     <form id="form" action="">
       <input id="input" autocomplete="off" /><button type="submit">Send</button>
     </form>
-    <script type="text/javascript" src="https://npmcdn.com/parse/dist/parse.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
 
     <script>
-
-      Parse.initialize("nMjLqkckfvcA7vV2nVA5cy0mMcIUgxN2AxJ5JU1T", "nMjLqkckfvcA7vV2nVA5cy0mMcIUgxN2AxJ5JU1T"); //PASTE HERE YOUR Back4App APPLICATION ID AND YOUR JavaScript KEY
-      Parse.serverURL = "https://parseapi.back4app.com/";
-
       const socket = io();
       const inputUserName = document.getElementById('userName');
       const messages = document.getElementById('messages');
