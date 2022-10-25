@@ -5,7 +5,7 @@
     <style>
       body { margin: 0; padding-bottom: 3rem; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
 
-      #form { background: rgba(0, 0, 0, 0.15); padding: 0.25rem; position: fixed; bottom: 0; left: 0; right: 0; display: flex; height: 3rem; box-sizing: border-box; backdrop-filter: blur(10px); }
+      #form { position: fixed; background: rgba(0, 0, 0, 0.15); padding: 0.25rem; position: fixed; bottom: 0; left: 0; right: 0; display: flex; height: 3rem; box-sizing: border-box; backdrop-filter: blur(10px); }
       #input { border: none; padding: 0 1rem; flex-grow: 1; border-radius: 2rem; margin: 0.25rem; }
       #input:focus { outline: none; }
       #form > button { background: #333; border: none; padding: 0 1rem; margin: 0.25rem; border-radius: 3px; outline: none; color: #fff; }
@@ -13,12 +13,14 @@
       #messages { list-style-type: none; margin: 0; padding: 0; }
       #messages > li { padding: 0.5rem 1rem; }
       #messages > li:nth-child(odd) { background: #efefef; }
+      #typing { position: absolute; top: -27px; left: 10px; white-space: nowrap;}
     </style>
   </head>
   <body>
     <input type="text" name="userName" id="userName" placeholder="Username">
     <ul id="messages"></ul>
     <form id="form" action="">
+      <div id="typing"></div>
       <input id="input" autocomplete="off" /><button type="submit">Send</button>
     </form>
     <script src="/socket.io/socket.io.js"></script>
@@ -29,6 +31,7 @@
       const messages = document.getElementById('messages');
       const form = document.getElementById('form');
       const input = document.getElementById('input');
+      const typing = document.getElementById('typing');
       
       let userCredentials = {name: sessionStorage.getItem('user'), msg: ''};
 
@@ -37,12 +40,24 @@
         userCredentials.name = inputUserName.value;
         socket.emit("registered", userCredentials);
       })
-      
+
+      input.addEventListener('input', () => {
+        if(!userCredentials.name || !(userCredentials.name.length > 1)){
+          return alert("Put a user name to enter in the chat");
+        };
+        
+        if(input.value.length > 0){
+          socket.emit('is typing', userCredentials.name);
+        } else {
+          socket.emit('clear is typing');
+        }
+
+      })
 
       form.addEventListener('submit', function(e) {
         e.preventDefault();
 
-        if(!userCredentials.name){
+        if(!userCredentials.name || !(userCredentials.name.length > 1)){
           return alert("Put a user name to enter in the chat");
         }
         
@@ -59,6 +74,16 @@
         const item = document.createElement('li');
         item.textContent = msg;
         messages.appendChild(item);
+        window.scrollTo(0, document.body.scrollHeight);
+      });
+
+      socket.on('is typing', function(userName) {
+        typing.innerText = `${userName} is typing...`;
+        window.scrollTo(0, document.body.scrollHeight);
+      });
+
+      socket.on('clear is typing', function() {
+        typing.innerText = '';
         window.scrollTo(0, document.body.scrollHeight);
       });
     </script>

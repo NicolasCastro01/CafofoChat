@@ -9,22 +9,27 @@ app.get('/', (req,res) => {
 });
 
 io.on('connection', (socket) => {
-  
-  
-  
+
   socket.on('registered', (user) => {
     io.emit('chat message', `${user.name} connected!`);
+
+    socket.on('is typing', (name) => {
+      io.emit('is typing', name);
+    });
 
     socket.on('disconnect', () => {
       io.emit('chat message', `${user.name} disconnected!`);
     });
   });
 
+  socket.on('clear is typing', () => io.emit('clear is typing'));
+
   socket.on('chat message', (userCredentials) => {
     io.emit('chat message', `${userCredentials.name}: ${userCredentials.msg}`)
+    io.emit('clear is typing');
   });
   
 });
 
 
-http.listen(port, () => console.log(`Server on: http://localhost:${port}`));
+http.listen(port, () => console.log(`[SV] >> Server on!\n[SV] >> Connected in port ${port}`));
