@@ -106,18 +106,6 @@
       socket.on('clear is typing', function() {
         typing.innerText = '';
       });
-
-      socket.on('loadUsers', function(users){
-        users.map(user=>{
-          const User = document.createElement('li');
-          const ballStatus = document.createElement('div');
-          ballStatus.setAttribute("id", "ball-status");
-          User.appendChild(ballStatus);
-          User.textContent = user.name;
-
-          usersList.appendChild(User);
-        })
-      });
     </script>
   </body>
 </html>

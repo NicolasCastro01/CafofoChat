@@ -14,15 +14,10 @@ app.get('/', (req,res) => {
   res.sendFile(__dirname  + '/index.html');
 });
 
-let users = []
-
 io.on('connection', (socket) => {
-  io.emit('loadUsers', users);
-  
+
   socket.on('registered', (user) => {
-    users.push(objectNewUser(socket.id, user.name));
     io.emit('chat message', `${user.name} connected!`);
-    io.emit('loadUsers', users);
 
     socket.on('is typing', (name) => {
       io.emit('is typing', name);
@@ -30,8 +25,6 @@ io.on('connection', (socket) => {
 
     socket.on('disconnect', () => {
       io.emit('chat message', `${user.name} disconnected!`);
-      users = users.filter(User => User.name === user.name);
-      io.emit('loadUsers', users);
     });
   });
 
