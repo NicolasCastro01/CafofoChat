@@ -14,7 +14,7 @@
         <ul id="messages"></ul>
       </section>
       <section id="users-container">
-        <ul id="users"><li><div id="ball-status"></div>Nicolas</li></ul>
+        <ul id="users"></ul>
       </section>
     </main>
     <form id="form" action="">
@@ -105,6 +105,14 @@
 
       socket.on('clear is typing', function() {
         typing.innerText = '';
+      });
+
+      socket.on('update', function(users){
+        usersList.innerHTML = '';
+        users.map(user=>{
+          const userInList = `<li><div id="ball-status"></div>${user.name}</li>`;
+          usersList.innerHTML += userInList;
+        });
       });
     </script>
   </body>

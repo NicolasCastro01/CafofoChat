@@ -4,9 +4,7 @@ const http = require('http').Server(app);
 const port = process.env.PORT || 3000;
 const io = require('socket.io')(http);
 
-function objectNewUser(socketId, Name){
-  return {socketId: socketId, name: Name}
-}
+let users = [];
 
 app.use(express.static('public'));
 
@@ -17,19 +15,28 @@ app.get('/', (req,res) => {
 io.on('connection', (socket) => {
 
   socket.on('registered', (user) => {
-    io.emit('chat message', `${user.name} connected!`);
+    socket.broadcast.emit('chat message', `${user.name} connected!`);
+    socket.user = user;
+    users.push(user);
+    updateUsers();
 
     socket.on('is typing', (name) => {
-      io.emit('is typing', name);
+      socket.broadcast.emit('is typing', name);
     });
 
     socket.on('disconnect', () => {
-      io.emit('chat message', `${user.name} disconnected!`);
+      socket.broadcast.emit('chat message', `${user.name} disconnected!`);
+      for (var i = 0; i < users.length; i++) {
+        if(users[i]===socket.user){
+          users.splice(users.indexOf(users[i]), 1);
+        }
+      }
+      updateUsers();
     });
   });
 
   socket.on('is typing', (name) => {
-    io.emit('is typing', name);
+    socket.broadcast.emit('is typing', name);
   });
 
   socket.on('clear is typing', () => io.emit('clear is typing'));
@@ -41,5 +48,11 @@ io.on('connection', (socket) => {
   
 });
 
+function updateUsers(){
+  io.emit('update', users);
+}
 
-http.listen(port, () => console.log(`[SV] >> Server on!\n[SV] >> Connected in port ${port}`));
+http.listen(port, () => {
+  console.clear();
+  console.log(`[SV] >> Server on!\n[SV] >> Connected in port ${port}`);
+});
