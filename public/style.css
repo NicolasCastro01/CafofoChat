@@ -1,6 +1,7 @@
 *{
     border-radius: 6px;
     outline: none;
+    scroll-behavior: smooth;
 }
 
 body { 
@@ -42,10 +43,25 @@ body {
 #typing { position: absolute; top: -27px; left: 10px; white-space: nowrap;}
 
 #messages-container{
-    width: 95%;
+    width: 100%;
     height: 800px;
 
     word-break: keep-all;
+    overflow-y: scroll;
+}
+
+#messages-container::-webkit-scrollbar{
+    width: 5px;
+}
+
+#messages-container::-webkit-scrollbar-thumb {
+    background-color: #333;    /* color of the scroll thumb */
+    border-radius: 20px;       /* roundness of the scroll thumb */
+    border: 1px solid dimgray;  /* creates padding around scroll thumb */
+  }
+
+#messages-container::-webkit-scrollbar-track{
+    border-radius: 50%;
 }
 
 #userName{
