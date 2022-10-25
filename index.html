@@ -91,12 +91,10 @@
 
         item.appendChild(timer);
         messages.appendChild(item);
-        window.scrollTo(0, document.body.scrollHeight);
       });
 
       socket.on('is typing', function(userName) {
         typing.innerText = `${userName} is typing...`;
-        window.scrollTo(0, document.body.scrollHeight);
       });
 
       socket.on('clear is typing', function() {
