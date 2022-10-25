@@ -83,7 +83,7 @@
         const item = document.createElement('li');
         const timer = document.createElement('span');
         const date = new Date();
-        const timestamp = `${date.getHours()}:${date.getMinutes()}`;
+        const timestamp = `${date.getHours()}:${date.getMinutes() < 10 ? '0'+date.getMinutes() : date.getMinutes() }`;
 
         timer.setAttribute("id", "timernow");
         timer.innerText = timestamp;
