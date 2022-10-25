@@ -23,7 +23,7 @@ body {
 #input:focus { outline: none; }
 #form > button { background: #333; border: none; padding: 0 1rem; margin: 0.25rem; border-radius: 3px; outline: none; color: #fff; }
 
-#messages { 
+#messages, #users { 
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -93,4 +93,57 @@ body {
     position: absolute;
     right: 12px;
     bottom: 6px;
+}
+
+#users-container{
+    width: 200px;
+    height: max-content;
+    max-height: 200px;
+    background-color: #fff;
+
+    display: flex;
+    justify-content: flex-start;
+
+    padding: 10px;
+
+    overflow-y: scroll;
+}
+
+#users-container::-webkit-scrollbar{
+    width: 5px;
+}
+
+#users-container::-webkit-scrollbar-thumb {
+    background-color: #333;    /* color of the scroll thumb */
+    border-radius: 20px;       /* roundness of the scroll thumb */
+    border: 1px solid dimgray;  /* creates padding around scroll thumb */
+  }
+
+#users-container::-webkit-scrollbar-track{
+    border-radius: 50%;
+}
+
+#users > li {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    gap: 4px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#ball-status{
+    width: 8px;
+    height: 8px;
+
+    border-radius: 50%;
+    background-color: green;
+}
+
+main{
+    display: flex;
+    justify-content: space-between;
+
+    width: 100%;
 }

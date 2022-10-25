@@ -4,16 +4,25 @@ const http = require('http').Server(app);
 const port = process.env.PORT || 3000;
 const io = require('socket.io')(http);
 
+function objectNewUser(socketId, Name){
+  return {socketId: socketId, name: Name}
+}
+
 app.use(express.static('public'));
 
 app.get('/', (req,res) => {
   res.sendFile(__dirname  + '/index.html');
 });
 
-io.on('connection', (socket) => {
+let users = []
 
+io.on('connection', (socket) => {
+  io.emit('loadUsers', users);
+  
   socket.on('registered', (user) => {
+    users.push(objectNewUser(socket.id, user.name));
     io.emit('chat message', `${user.name} connected!`);
+    io.emit('loadUsers', users);
 
     socket.on('is typing', (name) => {
       io.emit('is typing', name);
@@ -21,7 +30,13 @@ io.on('connection', (socket) => {
 
     socket.on('disconnect', () => {
       io.emit('chat message', `${user.name} disconnected!`);
+      users = users.filter(User => User.name === user.name);
+      io.emit('loadUsers', users);
     });
+  });
+
+  socket.on('is typing', (name) => {
+    io.emit('is typing', name);
   });
 
   socket.on('clear is typing', () => io.emit('clear is typing'));

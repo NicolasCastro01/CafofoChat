@@ -5,13 +5,18 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="./style.css">
   </head>
   <body>
     <input type="text" name="userName" id="userName" placeholder="Username...">
-    <section id="messages-container">
-      <ul id="messages"></ul>
-    </section>
+    <main>
+      <section id="messages-container">
+        <ul id="messages"></ul>
+      </section>
+      <section id="users-container">
+        <ul id="users"><li><div id="ball-status"></div>Nicolas</li></ul>
+      </section>
+    </main>
     <form id="form" action="">
       <div id="typing"></div>
       <input id="input" autocomplete="off" /><button type="submit">Send</button>
@@ -25,6 +30,7 @@
       const form = document.getElementById('form');
       const input = document.getElementById('input');
       const typing = document.getElementById('typing');
+      const usersList = document.getElementById('users');
       
       let userCredentials = {name: sessionStorage.getItem('user'), msg: ''};
 
@@ -39,8 +45,8 @@
           sessionStorage.setItem('user', inputUserName.value)
         };
 
-        if(!(inputUserName.value.length > 1)){
-          return alert("Username length cannot be lower than one characters.");
+        if(!(inputUserName.value.length > 1) || inputUserName.value.length > 8){
+          return alert("Username length cannot be lower than one characters and more than eight.");
         }
         
         userCredentials.name = inputUserName.value;
@@ -57,7 +63,7 @@
         if(input.value.length > 0){
           socket.emit('is typing', userCredentials.name);
         } else {
-          socket.emit('clear is typing');
+          socket.emit('clear is typing')
         }
 
       })
@@ -71,7 +77,7 @@
         }
         
 
-        if (input.value) {
+        if (input.value.length > 1) {
           userCredentials.msg = input.value;
           socket.emit('chat message', userCredentials);
           input.value = '';
@@ -99,6 +105,18 @@
 
       socket.on('clear is typing', function() {
         typing.innerText = '';
+      });
+
+      socket.on('loadUsers', function(users){
+        users.map(user=>{
+          const User = document.createElement('li');
+          const ballStatus = document.createElement('div');
+          ballStatus.setAttribute("id", "ball-status");
+          User.appendChild(ballStatus);
+          User.textContent = user.name;
+
+          usersList.appendChild(User);
+        })
       });
     </script>
   </body>
