@@ -47,6 +47,7 @@
 
       input.addEventListener('input', () => {
         if(!userCredentials.name || !(userCredentials.name.length > 1)){
+          input.value = '';
           return alert("Put a user name to enter in the chat");
         };
         
@@ -62,6 +63,7 @@
         e.preventDefault();
 
         if(!userCredentials.name || !(userCredentials.name.length > 1)){
+          input.value = '';
           return alert("Put a user name to enter in the chat");
         }
         
